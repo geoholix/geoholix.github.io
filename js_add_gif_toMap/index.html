@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" />
+  <title>Peta Pergerakan Awan</title>
+  <link rel="stylesheet" href="http://js.arcgis.com/3.16/dijit/themes/claro/claro.css">
+  <link rel="stylesheet" href="http://js.arcgis.com/3.16/esri/css/esri.css">
+  <style>
+    #map {
+      height: 100%;
+      margin: 0;
+    }
+
+    #toc-wrapper {
+      position: absolute;
+      left: 25px;
+      //top: 70px;
+      bottom: 25px;
+      padding: 10px;
+      background-color: #fff;
+    }
+
+    #tocButton {
+      position: absolute;
+      left: 25px;
+      top: 25px;
+      //bottom: 185px;
+      padding: 10px;
+      background-color: #fff;
+      z-index: 100;
+    }
+
+    //classes to style the legend
+    .esriLegendLayerLabel {
+      font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+      color: red;
+    }
+
+    .esriLegendServiceLabel {
+      font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+      font-size: 12px;
+      color: green;
+    }
+
+    .esriLegendService {
+      font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+      font-size: 11px;
+      color: #33A7DE;
+      font-weight: bold;
+    }
+  </style>
+
+
+  <script src="http://js.arcgis.com/3.16/"></script>
+  <script>
+  var map, mil;
+    require([
+        "esri/map",
+        "esri/config",
+        "esri/layers/FeatureLayer",
+		"esri/geometry/Extent", 
+        "esri/layers/MapImage", "esri/layers/MapImageLayer",
+        "esri/InfoTemplate",
+        "esri/renderers/UniqueValueRenderer",
+        "esri/symbols/SimpleMarkerSymbol",
+        "esri/Color",
+        "dojo/fx/Toggler",
+        "dojo/fx",
+        "dojo/_base/array",
+        "dojo/dom",
+        "dojo/dom-geometry",
+        "dojo/on",
+        "dojo/parser",
+        "dijit/registry",
+        //"agsjs/dijit/TOC",
+        "dijit/layout/ContentPane",
+        "dojo/domReady!"
+      ], function (
+      Map,
+      esriConfig,
+      FeatureLayer,
+	  Extent, 
+      MapImage, MapImageLayer,
+      InfoTemplate,
+      UniqueValueRenderer,
+      SimpleMarkerSymbol,
+      Color,
+      Toggler,
+      coreFx,
+      arrayUtils,
+      dom,
+      domGeom,
+      on,
+      parser,
+      registry,
+      TOC
+    ) {
+
+     
+      parser.parse(); 
+
+      map = new Map("map", {
+        basemap: "hybrid",
+        center: [118, 0],
+        zoom: 5,
+        logo: false,
+        slider: true,
+		sliderPosition: "top-right"
+      });
+	  
+	  // create and add the layer
+        var lyrawan = new MapImageLayer({ "id": "cloud movement" });
+        map.addLayer(lyrawan);
+		lyrawan.setOpacity(0.5);
+
+        // create and add the image
+        var extent = new Extent({"xmin":88,"ymin":-16.872496436542335,"xmax":151.93935546874065,"ymax":16.865675826636565,"spatialReference":{"wkid":4326}});
+        var imgawan = new MapImage({
+          "extent": extent,
+          "href": "http://satelit.bmkg.go.id/IMAGE/ANIMASI/MTS_CD_Indonesia_6.gif"
+        });
+        lyrawan.addImage(imgawan);
+
+      var isClicked = true; 
+      var tocToggler = new Toggler({
+        node: "toc-wrapper",
+        showFunc: coreFx.wipeIn,
+        hideFunc: coreFx.wipeOut
+      });
+      on(dom.byId("tocButton"), "click", function (e) {
+        if (isClicked === false) {
+          tocToggler.hide();
+          isClicked = true;
+        } else {
+          tocToggler.show();
+          isClicked = false;
+        }
+      });
+
+
+    });
+  </script>
+</head>
+
+<body>
+  <button type="button" id="tocButton" title="Hide/Show Layer List">Toggle Layer List</button>
+  <div id="map"></div>
+  <div id="toc-wrapper" style="display: none;">
+    <div id="toc" data-dojo-type="dijit/layout/ContentPane" style="overflow:auto;width:275px;height:350px;vertical-align:top;">
+      <div id="tocNode"></div>
+    </div>
+  </div>
+</body>
+
+</html>
